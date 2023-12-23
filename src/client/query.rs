@@ -1,3 +1,6 @@
+use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
+use std::str::FromStr;
+
 use cosmrs::rpc::{endpoint::abci_query::AbciQuery as QueryResponse, Client};
 use prost::Message;
 
@@ -23,18 +26,17 @@ impl super::Client {
     }
 
     pub async fn query_code_hash_by_code_id(&self, code_id: CodeId) -> Result<CodeHash> {
-        use cosmrs::proto::cosmwasm::secret::compute::v1beta1::{
-            QueryCodeRequest, QueryCodeResponse,
-        };
+        use cosmrs::proto::secret::compute::v1beta1::{QueryByCodeIdRequest, QueryCodeResponse};
         let path = "/secret.compute.v1beta1.Query/Code";
-        let msg = QueryCodeRequest {
+        let msg = QueryByCodeIdRequest {
             code_id: code_id.into(),
         };
         self.query_with_msg(path, msg)
             .await
             .and_then(try_decode_response::<QueryCodeResponse>)
             .and_then(|res| res.code_info.ok_or(Error::ContractInfoNotFound(code_id)))
-            .map(|ci| CodeHash::from(ci.data_hash))
+            // FIXME - this is just messy. can probably just return String instead of CodeHash
+            .map(|ci| CodeHash::from_str(ci.code_hash.as_str()).unwrap())
     }
 
     pub async fn query_contract<M, R>(
@@ -47,24 +49,24 @@ impl super::Client {
         M: serde::Serialize,
         R: serde::de::DeserializeOwned,
     {
-        use cosmrs::proto::cosmwasm::secret::compute::v1beta1::{
-            QuerySmartContractStateRequest, QuerySmartContractStateResponse,
+        use cosmrs::proto::secret::compute::v1beta1::{
+            QuerySecretContractRequest, QuerySecretContractResponse,
         };
         let path = "/secret.compute.v1beta1.Query/QuerySecretContract";
         let (nonce, encrypted) = self.encrypt_msg(msg, &contract.code_hash(), from).await?;
-        let msg = QuerySmartContractStateRequest {
-            address: contract.id().to_string(),
-            query_data: encrypted,
+        let msg = QuerySecretContractRequest {
+            contract_address: contract.id().to_string(),
+            query: encrypted,
         };
 
         let decrypter = self.decrypter(&nonce, from).await?;
 
         self.query_with_msg(path, msg)
             .await
-            .and_then(try_decode_response::<QuerySmartContractStateResponse>)
+            .and_then(try_decode_response::<QuerySecretContractResponse>)
             .and_then(|res| decrypter.decrypt(&res.data).map_err(crate::Error::from))
             .and_then(|plt| String::from_utf8(plt).map_err(crate::Error::from))
-            .and_then(|b46| base64::decode(b46).map_err(crate::Error::from))
+            .and_then(|b46| BASE_64.decode(b46).map_err(crate::Error::from))
             .and_then(|buf| serde_json::from_slice(&buf).map_err(crate::Error::from))
     }
 
@@ -88,7 +90,7 @@ impl super::Client {
     }
 
     pub(crate) async fn query_tx_key(&self) -> Result<Vec<u8>> {
-        use cosmrs::proto::cosmwasm::secret::registration::v1beta1::Key;
+        use cosmrs::proto::secret::registration::v1beta1::Key;
         let path = "/secret.registration.v1beta1.Query/TxKey";
         self.query_path(path)
             .await

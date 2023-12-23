@@ -1,4 +1,4 @@
-use crate::consts::{DEFAULT_PORT, TESTNET_CHAIN_ID, TESTNET_ENCLAVE_KEY};
+use crate::consts::{DEFAULT_PORT, TESTNET_CHAIN_ID, TESTNET_ENCLAVE_KEY, TESTNET_HOST};
 use crate::error::Result;
 
 pub mod account;
@@ -14,11 +14,13 @@ pub use client::{
     Client,
 };
 pub use error::Error;
-use futures::prelude::*;
+// use futures::prelude::*;
 
 pub struct SecretRPC {
+    /// RPC server URL
     host: String,
     port: u16,
+    /// Hex-encoded Enclave Public Key
     enclave_key: String,
     chain_id: String,
 }
@@ -27,7 +29,7 @@ impl SecretRPC {
     /// Initializes the constructor as a testnet instance
     pub fn new() -> Self {
         Self {
-            host: TESTNET_CHAIN_ID.to_owned(),
+            host: TESTNET_HOST.to_owned(),
             port: DEFAULT_PORT,
             enclave_key: TESTNET_ENCLAVE_KEY.to_owned(),
             chain_id: TESTNET_CHAIN_ID.to_owned(),
@@ -55,13 +57,6 @@ impl SecretRPC {
     }
 
     pub fn connect(&self) -> Result<Client> {
-        // let enclave_key = self
-        //     .enclave_key
-        //     .as_ref()
-        //     .map(|hk| hex::decode(hk))
-        //     .transpose()?
-        //     .map(|v| crypto::clone_into_key(&v));
-
         let enclave_key = crypto::clone_into_key(&hex::decode(&self.enclave_key)?);
 
         Client::init(&self.host, self.port, enclave_key, &self.chain_id)

@@ -2,7 +2,7 @@ use cosmrs::{
     crypto::{secp256k1::SigningKey, PublicKey},
     AccountId,
 };
-use cosmwasm_std::HumanAddr;
+use cosmwasm_std::Addr;
 
 use crate::{
     consts,
@@ -32,8 +32,8 @@ impl Account {
         Account { prvk, pubk }
     }
 
-    pub fn human_address(&self) -> HumanAddr {
-        self.id().as_ref().into()
+    pub fn human_address(&self) -> Addr {
+        Addr::unchecked(self.id().as_ref())
     }
 
     pub(crate) fn signing_key(&self) -> SigningKey {
@@ -75,19 +75,19 @@ mod test {
     fn accounts_from_mnemonic() {
         assert_eq!(
             a().human_address(),
-            HumanAddr::from("secret1ap26qrlp8mcq2pg6r47w43l0y8zkqm8a450s03")
+            Addr::unchecked("secret1ap26qrlp8mcq2pg6r47w43l0y8zkqm8a450s03")
         );
         assert_eq!(
             b().human_address(),
-            HumanAddr::from("secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne")
+            Addr::unchecked("secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne")
         );
         assert_eq!(
             c().human_address(),
-            HumanAddr::from("secret1ajz54hz8azwuy34qwy9fkjnfcrvf0dzswy0lqq")
+            Addr::unchecked("secret1ajz54hz8azwuy34qwy9fkjnfcrvf0dzswy0lqq")
         );
         assert_eq!(
             d().human_address(),
-            HumanAddr::from("secret1ldjxljw7v4vk6zhyduywh04hpj0jdwxsmrlatf")
+            Addr::unchecked("secret1ldjxljw7v4vk6zhyduywh04hpj0jdwxsmrlatf")
         );
     }
 }

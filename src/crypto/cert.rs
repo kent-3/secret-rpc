@@ -1,4 +1,5 @@
 use super::Key;
+use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
 
 #[derive(Debug, thiserror::Error)]
 pub enum MalformedError {
@@ -48,12 +49,12 @@ fn extract_netscape_comment(cert_der: &[u8]) -> Result<&[u8], MalformedError> {
     extract_asn1_value(cert_der, ns_cmt_oid)
 }
 
-pub(crate) fn consenus_io_pubk(cert_der: &[u8]) -> Result<Key, MalformedError> {
+pub(crate) fn consensus_io_pubk(cert_der: &[u8]) -> Result<Key, MalformedError> {
     // localsecret used software SGX so we can just deserialise the payload:
     // https://github.com/scrtlabs/SecretNetwork/blob/19bbd80307b4d6b49f04ad5c62008a3f25ba3f1e/x/registration/remote_attestation/remote_attestation.go#L25
     let buf = extract_netscape_comment(cert_der)?;
     let b64 = std::str::from_utf8(buf)?;
-    let pubk = base64::decode(b64)?;
+    let pubk = BASE_64.decode(b64)?;
 
     if pubk.len() < super::KEY_LEN {
         return Err(MalformedError::IncorrectLength);

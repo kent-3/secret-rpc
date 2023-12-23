@@ -23,13 +23,13 @@ pub enum QueryAnswer {
 async fn main() {
     let client = secret_rpc::SecretRPC::new()
         .host("http://rpc.testnet.secretsaturn.net")
-        .enclave_key("e24a22b31e3d34e0e00bcd32189548f1ccbdc9cda8f5a266219b908582b6f03f")
+        .enclave_key("e2b40597d50457d95290bdee480b8bc3400e9f40c2a5d69c9519f1fee2e24933")
         .connect()
         .unwrap();
 
     let contract = Contract::try_from_address_with_code_hash(
-        "secret18q8y7ulptuznz70ng7w7yt822ftt7g93v0lvwt",
-        "5266a630e2b8ef910fb2515e1d3b5be95d4bd48358732788d8fcd984ee966bc1",
+        "secret1gvn6eap7xgsf9kydgmvpqwzkru2zj35ar2vncj",
+        "c74bc4b0406507257ed033caa922272023ab013b0c74330efc16569528fa34fe",
     )
     .unwrap();
 

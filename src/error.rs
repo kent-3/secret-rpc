@@ -25,7 +25,7 @@ pub enum Error {
     #[error("CosmWasm Error: {0}")]
     CosmwWasm(#[from] cosmwasm_std::StdError),
     #[error("Account {0} not found")]
-    AccountNotFound(cosmwasm_std::HumanAddr),
+    AccountNotFound(cosmwasm_std::Addr),
     #[error("CosmRs error: {0}")]
     CosmRs(#[from] cosmrs::ErrorReport),
     #[error("Broadcast error - check tx failed: {0}")]

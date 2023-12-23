@@ -1,21 +1,16 @@
 use cosmrs::rpc;
-use std::cell::RefCell;
-use tokio::runtime::Runtime;
 
 use crate::{
     account::Account,
     crypto::{self, Decrypter, Nonce},
-    CodeHash, Error, Result,
+    CodeHash, Result,
 };
 
-// the client query impl
-mod query;
-// the client tx impl
+pub(crate) mod query;
 pub(crate) mod tx;
 pub mod types;
 
 pub struct Client {
-    rt: Runtime,
     rpc: rpc::HttpClient,
     chain_id: String,
     enclave_pubk: crypto::Key,
@@ -28,16 +23,10 @@ impl Client {
         enclave_key: crypto::Key,
         chain_id: &str,
     ) -> Result<Self> {
-        let rt = tokio::runtime::Builder::new_current_thread()
-            .enable_all()
-            .build()
-            .map_err(Error::Runtime)?;
-
         let rpc_url = format!("{}:{}", host, port);
         let rpc = rpc::HttpClient::new(rpc_url.as_str())?;
 
         Ok(Client {
-            rt,
             rpc,
             chain_id: chain_id.to_owned(),
             enclave_pubk: enclave_key,
