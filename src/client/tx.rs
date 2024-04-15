@@ -23,7 +23,8 @@ pub mod builder {
 
     pub type InitTx<'a> = Tx<'a, Unspecified, Unspecified>;
 
-    #[async_trait]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
     pub trait Broadcast {
         type Response;
 
@@ -170,7 +171,8 @@ pub mod builder {
         }
     }
 
-    #[async_trait]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
     impl<'a> Broadcast for Tx<'a, Upload, Account> {
         type Response = CodeId;
 
@@ -200,7 +202,8 @@ pub mod builder {
         }
     }
 
-    #[async_trait]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
     impl<'a, M: serde::Serialize + Send + Sync> Broadcast for Tx<'a, Initialize<M>, Account> {
         type Response = Contract;
 
@@ -241,7 +244,8 @@ pub mod builder {
         }
     }
 
-    #[async_trait]
+    #[cfg_attr(target_arch = "wasm32", async_trait(?Send))]
+    #[cfg_attr(not(target_arch = "wasm32"), async_trait)]
     impl<'a, M: serde::Serialize + Send + Sync, R: serde::de::DeserializeOwned + Send + Sync>
         Broadcast for Tx<'a, Execute<M, R>, Account>
     {
