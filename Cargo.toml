@@ -37,3 +37,8 @@ tokio = { version = "1.37.0", features = ["rt"] }
 
 [patch."https://github.com/kent-3/cosmos-rust"]
 cosmrs = { path = "../cosmos-rust/cosmrs" }
+
+[patch.crates-io]
+tendermint = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
+tendermint-proto = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
+tendermint-rpc = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
