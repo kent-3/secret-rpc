@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
 use cosmrs::{
-    // proto::traits::TypeUrl,
     rpc::endpoint::broadcast::tx_commit::Response as BroadcastResponse,
     tx::{Body, Fee, Msg, SignDoc, SignerInfo},
 };
