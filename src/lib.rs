@@ -14,7 +14,6 @@ pub use client::{
     Client,
 };
 pub use error::Error;
-// use futures::prelude::*;
 
 pub struct SecretRPC {
     /// RPC server URL
