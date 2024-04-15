@@ -4,40 +4,51 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cosmwasm-std = { version = "1.1.11", package = "secret-cosmwasm-std" }
+# blockchain
+cosmwasm-std = { version = "=1.1.11", package = "secret-cosmwasm-std" }
+cosmrs = { git = "https://github.com/kent-3/cosmos-rust", branch = "secret", features = ["bip32", "secret-cosmwasm", "rpc"] }
 prost = "0.12.3"
-cosmrs = { git = "https://github.com/kent-3/cosmos-rust", branch = "secret", features = [
-    "bip32",
-    "secret-cosmwasm",
-    "rpc",
-] }
 bip39 = "2.0.0"
 bip32 = "0.5.1"
 
+# general
 async-trait = "0.1.75"
 serde = "1.0.193"
 serde_json = "1.0.108"
+nanorand = "0.7.0"
+
+# crypto
 base64 = "0.22.0"
 hex = "0.4.3"
-nanorand = "0.7.0"
-x25519-dalek = { version = "2.0.0", features = ["static_secrets"] }
 hkdf = "0.12.4"
 sha2 = "0.10.8"
 aes-siv = "0.7.0"
+x25519-dalek = { version = "2.0.0", features = ["static_secrets"] }
+
+# errors
 thiserror = "1.0.51"
 color-eyre = "0.6.2"
 
+# needed for wasm to have a source of randomness
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 nanorand = { version = "0.7.0", features = ["getrandom", "zeroize"] }
 getrandom = { version = "0.2.14", features = ["js"] }
 
+# wasm must use current-thread scheduler
 [dev-dependencies]
-tokio = { version = "1.37.0", features = ["rt"] }
+tokio = { version = "1.37.0", features = ["rt", "sync"] }
 
+# For local development
 [patch."https://github.com/kent-3/cosmos-rust"]
 cosmrs = { path = "../cosmos-rust/cosmrs" }
 
 [patch.crates-io]
-tendermint = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
-tendermint-proto = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
-tendermint-rpc = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
+tendermint = { path = "../tendermint-rs/tendermint", version = "0.35" }
+tendermint-proto = { path = "../tendermint-rs/proto", version = "0.35" }
+tendermint-rpc = { path = "../tendermint-rs/rpc", version = "0.35" }
+
+# This fork adds target_arch = "wasm32" configurations to the rpc clients
+# [patch.crates-io]
+# tendermint = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
+# tendermint-proto = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
+# tendermint-rpc = { git = "https://github.com/kent-3/tendermint-rs", branch = "wasm", version = "0.35" }
