@@ -32,7 +32,6 @@ x25519-dalek = { version = "2.0.0", features = ["static_secrets"] }
 
 # errors
 thiserror = "1.0.51"
-color-eyre = "0.6.2"
 
 # needed for wasm to have a source of randomness
 [target.'cfg(target_arch = "wasm32")'.dependencies]
@@ -42,6 +41,7 @@ getrandom = { version = "0.2.14", features = ["js"] }
 # wasm must use current-thread scheduler
 [dev-dependencies]
 tokio = { version = "1.37.0", features = ["rt", "sync"] }
+color-eyre = "0.6.2"
 
 # For local development
 [patch."https://github.com/kent-3/cosmos-rust"]
