@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use super::Key;
 use base64::prelude::{Engine, BASE64_STANDARD};
 

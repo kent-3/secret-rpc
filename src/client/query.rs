@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 use base64::prelude::{Engine, BASE64_STANDARD};
 use std::str::FromStr;
 
