@@ -85,7 +85,7 @@ impl super::Client {
             .and_then(try_decode_response::<QueryAccountResponse>)
             .and_then(|res| {
                 res.account
-                    .ok_or_else(|| Error::AccountNotFound(account.human_address()))
+                    .ok_or_else(|| Error::AccountNotFound(account.addr()))
             })
             .and_then(try_decode_any::<BaseAccount>)
             .map(AccountInfo::from)

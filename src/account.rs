@@ -32,7 +32,7 @@ impl Account {
         Account { prvk, pubk }
     }
 
-    pub fn human_address(&self) -> Addr {
+    pub fn addr(&self) -> Addr {
         Addr::unchecked(self.id().as_ref())
     }
 
@@ -83,19 +83,19 @@ mod test {
     #[test]
     fn accounts_from_mnemonic() {
         assert_eq!(
-            a().human_address(),
+            a().addr(),
             Addr::unchecked("secret1ap26qrlp8mcq2pg6r47w43l0y8zkqm8a450s03")
         );
         assert_eq!(
-            b().human_address(),
+            b().addr(),
             Addr::unchecked("secret1fc3fzy78ttp0lwuujw7e52rhspxn8uj52zfyne")
         );
         assert_eq!(
-            c().human_address(),
+            c().addr(),
             Addr::unchecked("secret1ajz54hz8azwuy34qwy9fkjnfcrvf0dzswy0lqq")
         );
         assert_eq!(
-            d().human_address(),
+            d().addr(),
             Addr::unchecked("secret1ldjxljw7v4vk6zhyduywh04hpj0jdwxsmrlatf")
         );
     }
