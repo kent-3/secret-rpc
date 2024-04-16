@@ -38,8 +38,8 @@ thiserror = "1.0.51"
 nanorand = { version = "0.7.0", features = ["getrandom", "zeroize"] }
 getrandom = { version = "0.2.14", features = ["js"] }
 
-# wasm must use current-thread scheduler
 [dev-dependencies]
+# wasm must use current-thread scheduler
 tokio = { version = "1.37.0", features = ["rt", "sync"] }
 color-eyre = "0.6.2"
 
