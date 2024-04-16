@@ -11,7 +11,7 @@ pub(crate) mod tx;
 pub mod types;
 
 pub struct Client {
-    rpc: rpc::HttpClient,
+    pub rpc: rpc::HttpClient,
     chain_id: String,
     enclave_pubk: crypto::Key,
 }
