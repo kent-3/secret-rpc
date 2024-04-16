@@ -67,6 +67,15 @@ pub fn d() -> Account {
     Account::from_mnemonic(D_MNEMONIC).unwrap()
 }
 
+pub fn random() -> Account {
+    use nanorand::{BufferedRng, Rng, WyRand};
+
+    let mut thingy = [0u8; 64];
+    let mut rng = BufferedRng::new(WyRand::new());
+    rng.fill(&mut thingy);
+    Account::from_seed(thingy)
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
