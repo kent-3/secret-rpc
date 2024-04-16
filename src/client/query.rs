@@ -1,4 +1,4 @@
-use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
+use base64::prelude::{Engine, BASE64_STANDARD};
 use std::str::FromStr;
 
 use cosmrs::rpc::{endpoint::abci_query::AbciQuery as QueryResponse, Client};
@@ -66,7 +66,7 @@ impl super::Client {
             .and_then(try_decode_response::<QuerySecretContractResponse>)
             .and_then(|res| decrypter.decrypt(&res.data).map_err(crate::Error::from))
             .and_then(|plt| String::from_utf8(plt).map_err(crate::Error::from))
-            .and_then(|b46| BASE_64.decode(b46).map_err(crate::Error::from))
+            .and_then(|b46| BASE64_STANDARD.decode(b46).map_err(crate::Error::from))
             .and_then(|buf| serde_json::from_slice(&buf).map_err(crate::Error::from))
     }
 

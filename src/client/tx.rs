@@ -1,4 +1,4 @@
-use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
+use base64::prelude::{Engine, BASE64_STANDARD};
 use cosmrs::{
     rpc::endpoint::broadcast::tx_commit::Response as BroadcastResponse,
     tx::{Body, Fee, Msg, SignDoc, SignerInfo},
@@ -13,7 +13,7 @@ pub mod builder {
         path::{Path, PathBuf},
     };
 
-    use base64::{engine::general_purpose::STANDARD as BASE_64, Engine as _};
+    use base64::{prelude::BASE64_STANDARD, Engine};
     use cosmrs::{tx::Fee, Coin};
 
     use crate::{
@@ -282,7 +282,7 @@ pub mod builder {
                 .and_then(Result::from)
                 .and_then(|tx| tx.try_map(|cit| decrypter.decrypt(&cit)))
                 .and_then(|tx| tx.try_map(|plt| String::from_utf8(plt)))
-                .and_then(|tx| tx.try_map(|b64| BASE_64.decode(b64)))
+                .and_then(|tx| tx.try_map(|b64| BASE64_STANDARD.decode(b64)))
                 .and_then(|tx| tx.try_map(|buf| serde_json::from_slice(&buf)))
         }
     }
@@ -410,7 +410,7 @@ impl From<WithErrorDecryption> for Result<TxResponse<Vec<u8>>> {
 fn try_extract_encrypted_error(log: &str) -> Option<Vec<u8>> {
     log.split_once("encrypted:")
         .and_then(|(_, rest)| rest.split_once(":"))
-        .and_then(|(b64, _)| BASE_64.decode(b64.trim()).ok())
+        .and_then(|(b64, _)| BASE64_STANDARD.decode(b64.trim()).ok())
 }
 
 fn broadcast_tx_response(msg_type: &str, bcast_res: BroadcastResponse) -> BroadcastTxResponse {
