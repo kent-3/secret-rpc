@@ -12,10 +12,11 @@ use super::types::AccountInfo;
 
 impl super::Client {
     pub async fn query_uscrt_balance(&self, wallet: &str) -> Result<cosmwasm_std::Uint128> {
+    pub async fn query_uscrt_balance(&self, address: &str) -> Result<cosmwasm_std::Uint128> {
         use cosmrs::proto::cosmos::bank::v1beta1::{QueryBalanceRequest, QueryBalanceResponse};
         let path = "/cosmos.bank.v1beta1.Query/Balance";
         let msg = QueryBalanceRequest {
-            address: wallet.to_string(),
+            address: address.to_string(),
             denom: "uscrt".to_owned(),
         };
         self.query_with_msg(path, msg)
