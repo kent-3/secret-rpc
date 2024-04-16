@@ -37,7 +37,6 @@ impl super::Client {
             .await
             .and_then(try_decode_response::<QueryCodeResponse>)
             .and_then(|res| res.code_info.ok_or(Error::ContractInfoNotFound(code_id)))
-            // FIXME - this is just messy. can probably just return String instead of CodeHash
             .map(|ci| CodeHash::from_str(ci.code_hash.as_str()).unwrap())
     }
 
