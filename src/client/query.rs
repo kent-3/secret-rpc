@@ -11,7 +11,19 @@ use crate::{account::Account, CodeHash, CodeId, Contract, Error, Result};
 use super::types::AccountInfo;
 
 impl super::Client {
-    pub async fn query_uscrt_balance(&self, wallet: &str) -> Result<cosmwasm_std::Uint128> {
+    // Note - I don't think it makes sense to reimplement all of the inner rpc client methods.
+    //        I will make the rpc field pub instead.
+    //
+    // pub async fn latest_block(&self) -> Result<cosmrs::rpc::endpoint::block::Response> {
+    //     self.rpc.latest_block().await.map_err(Error::Rpc)
+    // }
+    //
+    // pub async fn block(&self, height: u32) -> Result<cosmrs::rpc::endpoint::block::Response> {
+    //     self.rpc.block(height).await.map_err(Error::Rpc)
+    // }
+    //
+    // etc...
+
     pub async fn query_uscrt_balance(&self, address: &str) -> Result<cosmwasm_std::Uint128> {
         use cosmrs::proto::cosmos::bank::v1beta1::{QueryBalanceRequest, QueryBalanceResponse};
         let path = "/cosmos.bank.v1beta1.Query/Balance";
