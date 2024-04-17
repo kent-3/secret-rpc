@@ -1,23 +1,11 @@
-use cosmrs::rpc::Client;
-use secret_rpc::{Contract, SecretRPC};
-
 use color_eyre::{eyre::Result, owo_colors::OwoColorize};
-use serde::{Deserialize, Serialize};
-use std::ops::Sub;
-
-// use openapi::{
-//     grpc_gateway_api::{
-//         contracts_by_code_id, get_block_by_height, get_latest_block, get_validator_set_by_height,
-//         ContractsByCodeIdParams, GetBlockByHeightParams, GetValidatorSetByHeightParams,
-//     },
-//     Configuration,
-// };
+use secret_rpc::TendermintClient;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let client = SecretRPC::new()
+    let client = secret_rpc::SecretRPC::new()
         .host("http://lcd.testnet.secretsaturn.net")
         .enclave_key("e2b40597d50457d95290bdee480b8bc3400e9f40c2a5d69c9519f1fee2e24933")
         .chain_id("secret-4")
