@@ -6,8 +6,6 @@ pub use crate::crypto::CryptoError;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
-    #[error("Failed to initialise tokio runtime: {0}")]
-    Runtime(std::io::Error),
     #[error("RPC failure: {0}")]
     Rpc(#[from] cosmrs::rpc::Error),
     #[error("Failed to read contract file: {0} - {1}")]
