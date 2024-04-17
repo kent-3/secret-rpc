@@ -15,6 +15,9 @@ pub use client::{
 };
 pub use error::Error;
 
+// Re-exports
+pub use cosmrs::rpc::Client as TendermintClient;
+
 pub struct SecretRPC {
     /// RPC server URL
     host: String,
