@@ -13,7 +13,7 @@ pub mod builder {
         path::{Path, PathBuf},
     };
 
-    use base64::{prelude::BASE64_STANDARD, Engine};
+    use base64::prelude::{Engine, BASE64_STANDARD};
     use cosmrs::{tx::Fee, Coin};
 
     use crate::{
