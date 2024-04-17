@@ -32,6 +32,22 @@ impl Account {
         Account { prvk, pubk }
     }
 
+    pub fn random() -> Account {
+        use nanorand::{BufferedRng, Rng, WyRand};
+
+        let mut seed = [0u8; 64];
+        let mut rng = BufferedRng::new(WyRand::new());
+        rng.fill(&mut seed);
+
+        let path = consts::SCRT_DERIVATION_PATH
+            .parse()
+            .expect("invalid scrt derivation path");
+        let prvk =
+            bip32::XPrv::derive_from_path(seed, &path).expect("private key derivation failed");
+        let pubk = SigningKey::from(&prvk).public_key();
+        Account { prvk, pubk }
+    }
+
     pub fn addr(&self) -> Addr {
         Addr::unchecked(self.id().as_ref())
     }
@@ -65,15 +81,6 @@ pub fn c() -> Account {
 
 pub fn d() -> Account {
     Account::from_mnemonic(D_MNEMONIC).unwrap()
-}
-
-pub fn random() -> Account {
-    use nanorand::{BufferedRng, Rng, WyRand};
-
-    let mut thingy = [0u8; 64];
-    let mut rng = BufferedRng::new(WyRand::new());
-    rng.fill(&mut thingy);
-    Account::from_seed(thingy)
 }
 
 #[cfg(test)]
