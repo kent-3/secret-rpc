@@ -95,7 +95,7 @@ impl Contract {
         let code_hash = CodeHash::from_str(code_hash)?;
         Ok(Contract { id, code_hash })
     }
-    pub fn human_address(&self) -> cosmwasm_std::Addr {
+    pub fn addr(&self) -> cosmwasm_std::Addr {
         cosmwasm_std::Addr::unchecked(self.id.as_ref())
     }
 
