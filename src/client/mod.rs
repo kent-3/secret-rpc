@@ -1,5 +1,3 @@
-use cosmrs::rpc;
-
 use crate::{
     account::Account,
     crypto::{self, Decrypter, Nonce},
@@ -11,7 +9,7 @@ pub(crate) mod tx;
 pub mod types;
 
 pub struct Client {
-    pub rpc: rpc::HttpClient,
+    pub rpc: cosmrs::rpc::HttpClient,
     chain_id: String,
     enclave_pubk: crypto::Key,
 }
@@ -24,7 +22,7 @@ impl Client {
         chain_id: &str,
     ) -> Result<Self> {
         let rpc_url = format!("{}:{}", host, port);
-        let rpc = rpc::HttpClient::new(rpc_url.as_str())?;
+        let rpc = cosmrs::rpc::HttpClient::new(rpc_url.as_str())?;
 
         Ok(Client {
             rpc,
@@ -34,7 +32,7 @@ impl Client {
     }
 
     pub async fn block_height(&self) -> Result<u32> {
-        let res = rpc::Client::latest_block(&self.rpc).await?;
+        let res = cosmrs::rpc::Client::latest_block(&self.rpc).await?;
         Ok(res.block.header.height.value() as _)
     }
 
