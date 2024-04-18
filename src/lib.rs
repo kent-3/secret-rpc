@@ -6,6 +6,7 @@ pub mod client;
 pub(crate) mod consts;
 pub(crate) mod crypto;
 pub mod error;
+pub mod query;
 
 pub use account::Account;
 pub use client::{
