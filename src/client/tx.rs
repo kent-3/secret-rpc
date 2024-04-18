@@ -446,15 +446,19 @@ fn broadcast_tx_response(msg_type: &str, bcast_res: BroadcastResponse) -> Broadc
         })
         .collect();
 
-    use cosmrs::proto::cosmos::base::abci::v1beta1::TxMsgData;
+    use cosmrs::proto::cosmos::base::abci::v1beta1::{MsgData, TxMsgData};
 
-    // Previously, data was Option<Data>. Now it's always returned, though "nullable".
     let response = TxMsgData::decode(bcast_res.tx_result.data)
         .expect("unexpected data in response")
-        .data
+        .msg_responses
         .into_iter()
-        .find(|msg| msg.msg_type == msg_type)
-        .map(|msg| msg.data);
+        .filter_map(|any| {
+            // Attempt to unpack the Any type into MsgData
+            let buf = any.value.as_slice();
+            MsgData::decode(buf).ok()
+        })
+        .find(|msg_data| msg_data.msg_type == msg_type)
+        .map(|msg_data| msg_data.data);
 
     BroadcastTxResponse::Delivered(TxResponse {
         response,
