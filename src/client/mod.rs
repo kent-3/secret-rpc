@@ -4,6 +4,7 @@ use crate::{
     CodeHash, Result,
 };
 
+mod bank;
 pub(crate) mod query;
 pub(crate) mod tx;
 pub mod types;

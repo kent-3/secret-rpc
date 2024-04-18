@@ -1,3 +1,37 @@
+extern crate alloc;
+extern crate std;
+
+// Copied from tendermint-rpc
+mod prelude;
+
+// pub mod dialect;
+// pub mod endpoint;
+// pub mod error;
+// pub mod event;
+mod id;
+mod method;
+// mod order;
+// mod paging;
+// pub mod query;
+pub mod request;
+pub mod response;
+pub mod response_error;
+// mod rpc_url;
+// pub mod serializers;
+mod utils;
+mod version;
+
+// pub use error::Error;
+pub use id::Id;
+pub use method::Method;
+// pub use order::Order;
+// pub use paging::{PageNumber, Paging, PerPage};
+pub use request::{Request, SimpleRequest};
+pub use response::Response;
+pub use response_error::{Code, ResponseError};
+// pub use rpc_url::{Scheme, Url};
+pub use version::Version;
+
 use crate::consts::{DEFAULT_PORT, TESTNET_CHAIN_ID, TESTNET_ENCLAVE_KEY, TESTNET_HOST};
 use crate::error::Result;
 
@@ -14,6 +48,9 @@ pub use client::{
     Client,
 };
 pub use error::Error;
+
+// Cosmos SDK
+pub mod bank;
 
 // Re-exports
 pub use cosmrs::rpc::Client as TendermintClient;
