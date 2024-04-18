@@ -117,15 +117,19 @@ impl super::Client {
         self.query_path(&path).await.map(|res| res.code.is_ok())
     }
 
-    async fn query_with_msg(&self, path: &str, msg: impl Message) -> Result<QueryResponse> {
+    pub(crate) async fn query_with_msg(
+        &self,
+        path: &str,
+        msg: impl Message,
+    ) -> Result<QueryResponse> {
         self.query(path, msg.encode_to_vec()).await
     }
 
-    async fn query_path(&self, path: &str) -> Result<QueryResponse> {
+    pub(crate) async fn query_path(&self, path: &str) -> Result<QueryResponse> {
         self.query(path, vec![]).await
     }
 
-    async fn query(&self, path: &str, data: Vec<u8>) -> Result<QueryResponse> {
+    pub(crate) async fn query(&self, path: &str, data: Vec<u8>) -> Result<QueryResponse> {
         let path = path.parse().expect("abci_query path conversion failed");
         Ok(self.rpc.abci_query(Some(path), data, None, false).await?)
     }
