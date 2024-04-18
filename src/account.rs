@@ -33,11 +33,10 @@ impl Account {
     }
 
     pub fn random() -> Account {
-        use nanorand::{BufferedRng, Rng, WyRand};
-
-        let mut seed = [0u8; 64];
-        let mut rng = BufferedRng::new(WyRand::new());
-        rng.fill(&mut seed);
+        use nanorand::rand::Rng;
+        let mut seed = [0; 64];
+        let mut rng = nanorand::rand::ChaCha8::new();
+        rng.fill_bytes(&mut seed);
 
         let path = consts::SCRT_DERIVATION_PATH
             .parse()
