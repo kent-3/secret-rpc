@@ -12,7 +12,7 @@ async fn main() -> Result<()> {
         .connect()?;
 
     println!("\n{}", "client.query_uscrt_balance(account)".bold());
-    let account = secret_rpc::a();
+    let account = secret_rpc::account::a();
     let balance = client.query_uscrt_balance(account.addr().as_str()).await?;
     println!("\n{}", balance.green());
 

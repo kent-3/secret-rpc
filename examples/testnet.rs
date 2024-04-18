@@ -34,7 +34,11 @@ async fn main() {
     .unwrap();
 
     let ans: QueryAnswer = client
-        .query_contract(&QueryMsg::TokenInfo {}, &contract, &secret_rpc::a())
+        .query_contract(
+            &QueryMsg::TokenInfo {},
+            &contract,
+            &secret_rpc::account::a(),
+        )
         .await
         .unwrap();
 
