@@ -1,6 +1,6 @@
-use cosmrs::proto::cosmos::auth::v1beta1::*;
-use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
-use cosmrs::proto::cosmos::vesting::v1beta1::{ContinuousVestingAccount, DelayedVestingAccount};
+use ::cosmrs::proto::cosmos::auth::v1beta1::*;
+use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
+use ::cosmrs::proto::cosmos::vesting::v1beta1::{ContinuousVestingAccount, DelayedVestingAccount};
 
 use super::{try_decode_any, try_decode_response};
 use crate::{Error, Result};

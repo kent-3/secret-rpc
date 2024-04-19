@@ -2,9 +2,9 @@
 
 // missing: DenomsMetadata, SupplyOf, SpendableBalances
 
-use cosmrs::proto::cosmos::bank::v1beta1::*;
-use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
-use cosmrs::proto::cosmos::base::v1beta1::Coin;
+use ::cosmrs::proto::cosmos::bank::v1beta1::*;
+use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
+use ::cosmrs::proto::cosmos::base::v1beta1::Coin;
 
 use super::{try_decode_any, try_decode_response};
 use crate::{Error, Result};

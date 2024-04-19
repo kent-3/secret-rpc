@@ -3,7 +3,6 @@ extern crate log;
 
 use color_eyre::eyre::Result;
 
-use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -17,6 +16,7 @@ async fn main() -> Result<()> {
         .chain_id("secret-4")
         .connect()?;
 
+    use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
     info!(target: "auth", "Testing 'auth' queries");
 
     let resp = client
