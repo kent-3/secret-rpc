@@ -1,8 +1,7 @@
 #[allow(unused)]
 use log::{debug, error, info, warn};
 
-use color_eyre::eyre::Result;
-
+use color_eyre::Result;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -10,18 +9,26 @@ async fn main() -> Result<()> {
     color_eyre::install()?;
     pretty_env_logger::init();
 
+    // Returns a `secret_rpc::Client`
     let client = secret_rpc::SecretRPC::new()
         .host("http://lcd.testnet.secretsaturn.net")
         .enclave_key("e2b40597d50457d95290bdee480b8bc3400e9f40c2a5d69c9519f1fee2e24933")
         .chain_id("secret-4")
         .connect()?;
 
+    // A single item page used throughout for brevity
     use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
+    let one_page = Some(PageRequest {
+        key: vec![],
+        offset: 0,
+        limit: 1,
+        count_total: true,
+        reverse: false,
+    });
+
     info!(target: "auth", "Testing 'auth' queries");
 
-    let resp = client
-        .auth_account(secret_rpc::account::a().addr().to_string())
-        .await?;
+    let resp = client.auth_account(secret_rpc::account::a().addr()).await?;
 
     // There are 4 different possible types of accounts associated with an address
     use secret_rpc::query::auth::Account;
@@ -39,14 +46,6 @@ async fn main() -> Result<()> {
             info!(target: "auth", "{:?}", delayed)
         }
     };
-
-    let one_page = Some(PageRequest {
-        key: vec![],
-        offset: 0,
-        limit: 1,
-        count_total: true,
-        reverse: false,
-    });
 
     let resp = client.auth_accounts(one_page.clone()).await?;
     info!(target: "auth", "{resp:?}");
