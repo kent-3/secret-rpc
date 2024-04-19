@@ -1,5 +1,5 @@
-#[macro_use]
-extern crate log;
+#[allow(unused)]
+use log::{debug, error, info, warn};
 
 use color_eyre::eyre::Result;
 
