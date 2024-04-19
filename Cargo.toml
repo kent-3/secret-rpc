@@ -40,8 +40,10 @@ getrandom = { version = "0.2.14", features = ["js"] }
 
 [dev-dependencies]
 # wasm must use current-thread scheduler
-tokio = { version = "1.37.0", features = ["rt", "sync"] }
-color-eyre = "0.6.2"
+tokio = { version = "1.37", features = ["rt", "sync", "time"] }
+color-eyre = "0.6"
+log = "0.4"
+pretty_env_logger = "0.5"
 
 # This patch adds target_arch = "wasm32" configurations to the rpc clients
 [patch.crates-io]
