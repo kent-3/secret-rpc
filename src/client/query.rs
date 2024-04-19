@@ -129,6 +129,7 @@ impl super::Client {
         self.query(path, vec![]).await
     }
 
+    // TODO - add a way to specify the block height (third argument to `abci_query`)
     pub(crate) async fn query(&self, path: &str, data: Vec<u8>) -> Result<QueryResponse> {
         let path = path.parse().expect("abci_query path conversion failed");
         Ok(self.rpc.abci_query(Some(path), data, None, false).await?)
