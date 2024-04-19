@@ -1,7 +1,8 @@
 pub mod auth;
 pub mod bank;
+pub mod staking;
 
-use cosmrs::rpc::endpoint::abci_query::AbciQuery as QueryResponse;
+use ::cosmrs::rpc::endpoint::abci_query::AbciQuery as QueryResponse;
 
 use prost::Message;
 
@@ -15,7 +16,7 @@ fn try_decode_response<T: Message + Default>(response: QueryResponse) -> Result<
     try_decode_bytes(&response.value)
 }
 
-fn try_decode_any<T: Message + Default>(any: cosmrs::Any) -> Result<T> {
+fn try_decode_any<T: Message + Default>(any: ::cosmrs::Any) -> Result<T> {
     try_decode_bytes(&any.value)
 }
 

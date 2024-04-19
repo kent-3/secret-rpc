@@ -1,9 +1,8 @@
-#![allow(unused)]
-
 use base64::prelude::{Engine, BASE64_STANDARD};
 use std::str::FromStr;
 
-use cosmrs::rpc::{endpoint::abci_query::AbciQuery as QueryResponse, Client};
+use ::cosmrs::rpc::endpoint::abci_query::AbciQuery as QueryResponse;
+use ::cosmrs::rpc::Client;
 use prost::Message;
 
 use crate::{account::Account, CodeHash, CodeId, Contract, Error, Result};
@@ -11,21 +10,8 @@ use crate::{account::Account, CodeHash, CodeId, Contract, Error, Result};
 use super::types::AccountInfo;
 
 impl super::Client {
-    // Note - I don't think it makes sense to reimplement all of the inner rpc client methods.
-    //        I will make the rpc field pub instead.
-    //
-    // pub async fn latest_block(&self) -> Result<cosmrs::rpc::endpoint::block::Response> {
-    //     self.rpc.latest_block().await.map_err(Error::Rpc)
-    // }
-    //
-    // pub async fn block(&self, height: u32) -> Result<cosmrs::rpc::endpoint::block::Response> {
-    //     self.rpc.block(height).await.map_err(Error::Rpc)
-    // }
-    //
-    // etc...
-
     pub async fn query_uscrt_balance(&self, address: &str) -> Result<cosmwasm_std::Uint128> {
-        use cosmrs::proto::cosmos::bank::v1beta1::{QueryBalanceRequest, QueryBalanceResponse};
+        use ::cosmrs::proto::cosmos::bank::v1beta1::{QueryBalanceRequest, QueryBalanceResponse};
         let path = "/cosmos.bank.v1beta1.Query/Balance";
         let msg = QueryBalanceRequest {
             address: address.to_string(),
@@ -41,7 +27,7 @@ impl super::Client {
     }
 
     pub async fn query_code_hash_by_code_id(&self, code_id: CodeId) -> Result<CodeHash> {
-        use cosmrs::proto::secret::compute::v1beta1::{QueryByCodeIdRequest, QueryCodeResponse};
+        use ::cosmrs::proto::secret::compute::v1beta1::{QueryByCodeIdRequest, QueryCodeResponse};
         let path = "/secret.compute.v1beta1.Query/Code";
         let msg = QueryByCodeIdRequest {
             code_id: code_id.into(),
@@ -63,7 +49,7 @@ impl super::Client {
         M: serde::Serialize,
         R: serde::de::DeserializeOwned,
     {
-        use cosmrs::proto::secret::compute::v1beta1::{
+        use ::cosmrs::proto::secret::compute::v1beta1::{
             QuerySecretContractRequest, QuerySecretContractResponse,
         };
         let path = "/secret.compute.v1beta1.Query/QuerySecretContract";
@@ -85,7 +71,7 @@ impl super::Client {
     }
 
     pub(crate) async fn query_account_info(&self, account: &Account) -> Result<AccountInfo> {
-        use cosmrs::proto::cosmos::auth::v1beta1::{
+        use ::cosmrs::proto::cosmos::auth::v1beta1::{
             BaseAccount, QueryAccountRequest, QueryAccountResponse,
         };
         let path = "/cosmos.auth.v1beta1.Query/Account";
@@ -103,8 +89,10 @@ impl super::Client {
             .map(AccountInfo::from)
     }
 
+    // TODO - use this to get the enclave key automatically
+    #[allow(unused)]
     pub(crate) async fn query_tx_key(&self) -> Result<Vec<u8>> {
-        use cosmrs::proto::secret::registration::v1beta1::Key;
+        use ::cosmrs::proto::secret::registration::v1beta1::Key;
         let path = "/secret.registration.v1beta1.Query/TxKey";
         self.query_path(path)
             .await
@@ -144,7 +132,7 @@ fn try_decode_response<T: Message + Default>(response: QueryResponse) -> Result<
     try_decode_bytes(&response.value)
 }
 
-fn try_decode_any<T: Message + Default>(any: cosmrs::Any) -> Result<T> {
+fn try_decode_any<T: Message + Default>(any: ::cosmrs::Any) -> Result<T> {
     try_decode_bytes(&any.value)
 }
 
