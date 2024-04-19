@@ -1,22 +1,16 @@
-#![allow(unused)]
-
 use cosmrs::proto::cosmos::auth::v1beta1::*;
 use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
 use cosmrs::proto::cosmos::vesting::v1beta1::{ContinuousVestingAccount, DelayedVestingAccount};
-use cosmrs::rpc::endpoint::abci_query::AbciQuery as QueryResponse;
-use cosmrs::Any;
-
-use prost::Message;
 
 use super::{try_decode_any, try_decode_response};
 use crate::{Error, Result};
 
 #[derive(Debug)]
 pub enum Account {
-    BaseAccount(BaseAccount),
-    ModuleAccount(ModuleAccount),
-    ContinuousVestingAccount(ContinuousVestingAccount),
-    DelayedVestingAccount(DelayedVestingAccount),
+    BaseAccount(::cosmrs::auth::BaseAccount),
+    ModuleAccount(::cosmrs::auth::ModuleAccount),
+    ContinuousVestingAccount(::cosmrs::vesting::ContinuousVestingAccount),
+    DelayedVestingAccount(::cosmrs::vesting::DelayedVestingAccount),
 }
 
 impl crate::Client {
@@ -37,20 +31,21 @@ impl crate::Client {
 
         match any.type_url.as_str() {
             "/cosmos.auth.v1beta1.BaseAccount" => {
-                let account = try_decode_any::<BaseAccount>(any)?;
-                Ok(Account::BaseAccount(account))
+                let account: BaseAccount = any.to_msg()?;
+                Ok(Account::BaseAccount(account.try_into()?))
             }
             "/cosmos.auth.v1beta1.ModuleAccount" => {
-                let account = ModuleAccount::decode(any.value.as_slice())?;
-                Ok(Account::ModuleAccount(account))
+                let account: ModuleAccount = any.to_msg()?;
+                Ok(Account::ModuleAccount(account.try_into()?))
             }
+            // trait 'Name' is not implemented for these
             "/cosmos.vesting.v1beta1.ContinuousVestingAccount" => {
-                let account = ContinuousVestingAccount::decode(any.value.as_slice())?;
-                Ok(Account::ContinuousVestingAccount(account))
+                let account = try_decode_any::<ContinuousVestingAccount>(any)?;
+                Ok(Account::ContinuousVestingAccount(account.try_into()?))
             }
             "/cosmos.vesting.v1beta1.DelayedVestingAccount" => {
-                let account = DelayedVestingAccount::decode(any.value.as_slice())?;
-                Ok(Account::DelayedVestingAccount(account))
+                let account = try_decode_any::<DelayedVestingAccount>(any)?;
+                Ok(Account::DelayedVestingAccount(account.try_into()?))
             }
             _ => Err(Error::AbciQuery(format!(
                 "unexpected type_url: {}",
@@ -79,13 +74,9 @@ impl crate::Client {
         self.query_with_msg(path, msg)
             .await
             .and_then(try_decode_response::<QueryParamsResponse>)
-            .and_then(|x| {
-                x.params
-                    .ok_or_else(|| Error::AbciQuery("empty params".to_string()))
-            })
+            .and_then(|x| x.params.ok_or(Error::AbciQuery("empty params".to_string())))
     }
 
-    // TODO - figure out which account types are possible to return here, to decode 'Any'
     pub async fn auth_module_account_by_name(
         &self,
         name: impl Into<String>,
@@ -99,10 +90,8 @@ impl crate::Client {
             .await
             .and_then(try_decode_response::<QueryModuleAccountByNameResponse>)
             .and_then(|res| {
-                res.account.ok_or(Error::AbciQuery(format!(
-                    "module account \"{}\" not found",
-                    name
-                )))
+                res.account
+                    .ok_or(Error::AbciQuery("empty account".to_string()))
             })
             .and_then(try_decode_any::<ModuleAccount>)
     }
