@@ -11,6 +11,7 @@ use super::{try_decode_any, try_decode_response};
 use crate::{Error, Result};
 
 impl crate::Client {
+    /// `/cosmos.bank.v1beta1.Query/Balance`: get balance of a specific denom
     pub async fn bank_balance(
         &self,
         address: impl Into<String>,
@@ -32,6 +33,7 @@ impl crate::Client {
     }
 
     // TODO - more work needed here to handle the response and pagination...
+    /// `/cosmos.bank.v1beta1.Query/AllBalances`: get balances of all denoms
     pub async fn bank_all_balances(
         &self,
         address: impl Into<String>,
@@ -51,6 +53,7 @@ impl crate::Client {
     }
 
     // TODO - more work needed here to handle the response and pagination...
+    /// `/cosmos.bank.v1beta1.Query/TotalSupply`: get the total supply of all denoms
     pub async fn bank_total_supply(
         &self,
         pagination: Option<PageRequest>,
@@ -63,6 +66,7 @@ impl crate::Client {
             .and_then(try_decode_response::<QueryTotalSupplyResponse>)
     }
 
+    /// `/cosmos.bank.v1beta1.Query/Params`: get the parameters of the bank module
     pub async fn bank_params(&self) -> Result<Params> {
         let path = "/cosmos.bank.v1beta1.Query/Params";
         let msg = QueryParamsRequest {};
@@ -75,6 +79,10 @@ impl crate::Client {
                     .ok_or(Error::AbciQuery("empty params".to_string()))
             })
     }
+
+    /// `/cosmos.bank.v1beta1.Query/DenomMetadata`: get metadata about a specific denom
+    ///
+    /// Note! Not all denoms have this.
     pub async fn bank_denom_metadata(
         &self,
         denom: impl Into<String>,
