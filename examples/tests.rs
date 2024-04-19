@@ -3,6 +3,8 @@ extern crate log;
 
 use color_eyre::eyre::Result;
 
+use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
+
 #[tokio::main]
 async fn main() -> Result<()> {
     std::env::set_var("RUST_LOG", "info");
@@ -38,16 +40,15 @@ async fn main() -> Result<()> {
         }
     };
 
-    use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
-    let resp = client
-        .auth_accounts(Some(PageRequest {
-            key: vec![],
-            offset: 0,
-            limit: 1,
-            count_total: true,
-            reverse: false,
-        }))
-        .await?;
+    let one_page = Some(PageRequest {
+        key: vec![],
+        offset: 0,
+        limit: 1,
+        count_total: true,
+        reverse: false,
+    });
+
+    let resp = client.auth_accounts(one_page.clone()).await?;
     info!(target: "auth", "{resp:?}");
 
     let resp = client.auth_params().await?;
@@ -55,6 +56,25 @@ async fn main() -> Result<()> {
 
     let resp = client.auth_module_account_by_name("gov").await?;
     info!(target: "auth", "{resp:?}");
+
+    let resp = client
+        .bank_balance(secret_rpc::account::a().addr().to_string(), "uscrt")
+        .await?;
+    info!(target: "bank", "{resp:?}");
+
+    let resp = client
+        .bank_all_balances(
+            secret_rpc::account::a().addr().to_string(),
+            one_page.clone(),
+        )
+        .await?;
+    info!(target: "bank", "{resp:?}");
+
+    let resp = client.bank_params().await?;
+    info!(target: "bank", "{resp:?}");
+
+    let resp = client.bank_total_supply(one_page).await?;
+    info!(target: "bank", "{resp:?}");
 
     Ok(())
 }

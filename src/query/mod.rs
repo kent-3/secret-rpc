@@ -1,4 +1,5 @@
 pub mod auth;
+pub mod bank;
 
 use cosmrs::rpc::endpoint::abci_query::AbciQuery as QueryResponse;
 
