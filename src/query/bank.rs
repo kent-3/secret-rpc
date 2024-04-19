@@ -1,6 +1,7 @@
 #![allow(unused)]
 
-// missing: DenomsMetadata, SupplyOf, SpendableBalances
+// TODO - Add query methods:
+// DenomsMetadata, SupplyOf, SpendableBalances
 
 use ::cosmrs::proto::cosmos::bank::v1beta1::*;
 use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
@@ -49,6 +50,7 @@ impl crate::Client {
             .and_then(try_decode_response::<QueryAllBalancesResponse>)
     }
 
+    // TODO - more work needed here to handle the response and pagination...
     pub async fn bank_total_supply(
         &self,
         pagination: Option<PageRequest>,

@@ -1,3 +1,6 @@
+// TODO - Add query methods (not sure if they exist... they are not in secretjs):
+// ModuleAccounts, AccountAddressByID, AddressStringToBytes, AddressBytesToString, Bech32Prefix
+
 use ::cosmrs::proto::cosmos::auth::v1beta1::*;
 use ::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
 use ::cosmrs::proto::cosmos::vesting::v1beta1::{ContinuousVestingAccount, DelayedVestingAccount};
