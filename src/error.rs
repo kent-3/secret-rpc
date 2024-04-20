@@ -21,7 +21,7 @@ pub enum Error {
     #[error("Decoding protobuf response failed: {0}")]
     ProtobufDecode(#[from] prost::DecodeError),
     #[error("CosmWasm Error: {0}")]
-    CosmwWasm(#[from] cosmwasm_std::StdError),
+    CosmWasm(#[from] cosmwasm_std::StdError),
     #[error("Account {0} not found")]
     AccountNotFound(cosmwasm_std::Addr),
     #[error("CosmRs error: {0}")]
