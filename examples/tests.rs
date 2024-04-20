@@ -29,23 +29,24 @@ async fn main() -> Result<()> {
     info!(target: "auth", "Testing 'auth' queries");
 
     let resp = client.auth_account(secret_rpc::account::a().addr()).await?;
+    info!(target: "auth", "{resp:?}");
 
     // There are 4 different possible types of accounts associated with an address
-    use secret_rpc::query::auth::Account;
-    match resp {
-        Account::BaseAccount(base) => {
-            info!(target: "auth", "{:?}", base)
-        }
-        Account::ModuleAccount(module) => {
-            info!(target: "auth", "{:?}", module)
-        }
-        Account::ContinuousVestingAccount(continuous) => {
-            info!(target: "auth", "{:?}", continuous)
-        }
-        Account::DelayedVestingAccount(delayed) => {
-            info!(target: "auth", "{:?}", delayed)
-        }
-    };
+    // use secret_rpc::query::auth::Account;
+    // match resp {
+    //     Account::BaseAccount(base) => {
+    //         info!(target: "auth", "{:?}", base)
+    //     }
+    //     Account::ModuleAccount(module) => {
+    //         info!(target: "auth", "{:?}", module)
+    //     }
+    //     Account::ContinuousVestingAccount(continuous) => {
+    //         info!(target: "auth", "{:?}", continuous)
+    //     }
+    //     Account::DelayedVestingAccount(delayed) => {
+    //         info!(target: "auth", "{:?}", delayed)
+    //     }
+    // };
 
     let resp = client.auth_accounts(one_page.clone()).await?;
     info!(target: "auth", "{resp:?}");
